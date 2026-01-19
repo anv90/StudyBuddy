@@ -9,12 +9,13 @@ requires-python = ">=3.14"
 version = "0.1.0"
 
 dependencies = [
+    "art>=6.5",
     "httpx>=0.28.1",
     "loguru",
     "more-itertools>=10.7.0",
     "python-dotenv>=1.2.1",
-    "rich>=14.2.0",
-    "typer>=0.21.1",
+    "textual>=7.3.0",
+    "textual-dev>=1.8.0",
 ]
 
 
