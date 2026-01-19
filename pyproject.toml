@@ -1,0 +1,120 @@
+[project]
+name = "cs361-studybuddy"
+description = "A short description of the project"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Anvesha Kumar" }]
+keywords = ["cs361-studybuddy", "example", "template"]
+requires-python = ">=3.14"
+version = "0.1.0"
+
+dependencies = [
+    "httpx>=0.28.1",
+    "loguru",
+    "more-itertools>=10.7.0",
+    "python-dotenv>=1.2.1",
+    "rich>=14.2.0",
+    "typer>=0.21.1",
+]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "pytest-datadir",
+    "pytest-cov",
+    "pytest-html",
+    "pytest-mock",
+    "pytest-faker",
+    "pytest-print",
+    "ruff",
+    "ty"
+]
+
+
+
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+lint.select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle Error
+    "W",   # pycodestyle Warning
+    "C90", # mccabe
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "YTT", # flake8-2020
+    "ANN", # flake8-annotations
+    "S",   # flake8-bandit
+    "BLE", # flake8-blind-except
+    "FBT", # flake8-boolean-trap
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+    "C40", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "T10", # flake8-debugger
+    "EM",  # flake8-errmsg
+    "EXE", # flake8-executable
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "G",   # flake8-logging-format
+    "INP", # flake8-no-pep420
+    "PIE", # flake8-pie
+    "T20", # flake8-print
+    "PYI", # flake8-pyi
+    "PT",  # flake8-pytest-style
+    "Q",   # flake8-quotes
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SLF", # flake8-self
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "ERA", # eradicate
+    "PGH", # pygrep-hooks
+    "PL",  # Pylint
+    "TRY", # tryceratops
+    "RUF", # Ruff-specific rules
+]
+
+lint.unfixable = ["B"]
+
+# Exclude a variety of commonly ignored directories.
+lint.exclude = [
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "build",
+    "venv",
+    "tests",
+]
+
+# Never enforce line length violations.
+lint.ignore = ["E501"]
+
+# Always generate Python 3.14 compatible code.
+target-version = "py314"
+
+# Same as Black.
+line-length = 88
+
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"./tests/**" = ["S101"]  # Allow use of assert in tests
+
+
+[tool.ruff.lint.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
