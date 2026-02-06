@@ -192,6 +192,7 @@ dependencies = [
     { name = "loguru" },
     { name = "more-itertools" },
     { name = "python-dotenv" },
+    { name = "rich" },
     { name = "textual" },
     { name = "textual-dev" },
 ]
@@ -216,6 +217,7 @@ requires-dist = [
     { name = "loguru" },
     { name = "more-itertools", specifier = ">=10.7.0" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
+    { name = "rich", specifier = ">=14.2.0" },
     { name = "textual", specifier = ">=7.3.0" },
     { name = "textual-dev", specifier = ">=1.8.0" },
 ]
