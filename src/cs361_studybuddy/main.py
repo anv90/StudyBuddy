@@ -35,6 +35,9 @@ def upload_task_list(task_list: list[str]):
         with open("src/cs361_studybuddy/task.txt", "w") as file:
             for line in task_list:
                 file.write(f"{line}\n")
+    else:
+        with open("src/cs361_studybuddy/task.txt", "w") as file:
+            pass #so that list is cleared
     #return 0
 
 def print_task_list(task_list: list[str]) -> None:
@@ -80,7 +83,8 @@ def edit_task(task_list: list[str]) -> None:
 def delete_task(task_list: list[str]) -> None:
     while True:
         idx = IntPrompt.ask("\nWhich task would you like to delete?")
-        if (idx > 0 and idx < len(task_list)):
+        logger.info(f"{len(task_list)}")
+        if (idx > 0 and idx <= len(task_list)):
             break
         else:
             console.print("invalid option, try again", style="red")
@@ -142,6 +146,10 @@ def main() -> None:
     task_list: list[str] = []
     download_task_list(task_list)
     console.print("[bold]A study tool to help you keep track of your tasks so you can have a more efficient study session![/bold]\n")
+    console.print("Wondering how to get started?")
+    console.print("1. type v to navigate to the view task page")
+    console.print("2. type a to add a task. Start working on your task")
+    console.print("3. Done with the task? Type d to delete. Want to change the task? Type e to edit!")
     while True:
         console.print("Type the command and press enter to navigate to the page!", style = "bold")
         console.print("\n[magenta bold]v[/magenta bold] - view to do list\n[magenta bold]h[/magenta bold] - help page\n[magenta bold]a[/magenta bold] - add a task to list\n[red bold]exit[/red bold] - exit studdy buddy\n")
