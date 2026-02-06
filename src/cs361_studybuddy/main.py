@@ -69,7 +69,7 @@ def edit_task(task_list: list[str]) -> None:
     #idx = IntPrompt.ask("Which task do you want to edit?")
     while True:
         idx = IntPrompt.ask("\nWhich task would you like to edit?")
-        if (idx > 0 and idx < len(task_list)):
+        if (idx > 0 and idx <= len(task_list)):
             break
         else:
             console.print("invalid option, try again", style="red")
@@ -110,13 +110,17 @@ def render_help_page() -> None:
     #instructions
     #header task page
     #instructions
-    console.print("I Need Help!\nWelcome to Study Buddy!\nOn the home page:\nTo view your to do list, type v\nOnce you are viewing your to do list, type a to add to your list, or d to delete from your list\nTo add to your to do list, type a\nQuestions? Contact help@studybuddy.com!")
+   # console.print("I Need Help!\nWelcome to Study Buddy!\nOn the home page:\nTo view your to do list, type v\nOnce you are viewing your to do list, type a to add to your list, or d to delete from your list\nTo add to your to do list, type a\nQuestions? Contact help@studybuddy.com!")
+    console.print("Wondering how to get started?", style="bold")
+    console.print("1. From the home page, type v to navigate to the view task page")
+    console.print("2. type a to add a task. Start working on your task")
+    console.print("3. Done with the task? Type d to delete. Want to change the task? Type e to edit!")
     return;
 
 #use rich prompting!!!
 def open_task_page(task_list: list[str]) -> None:
     while True:
-        time.sleep(0.5)
+        time.sleep(0.2)
         print_task_list(task_list)
         print("\nWant to work on your list?\n[magenta bold]a[/magenta bold] - add a task\n[magenta bold]d[/magenta bold] - delete a task\n[magenta bold]e[/magenta bold] - edit a task\n[red bold]exit[/red bold] - exit to do list\n")
         #option = input("enter command here:")
@@ -146,10 +150,7 @@ def main() -> None:
     task_list: list[str] = []
     download_task_list(task_list)
     console.print("[bold]A study tool to help you keep track of your tasks so you can have a more efficient study session![/bold]\n")
-    console.print("Wondering how to get started?")
-    console.print("1. type v to navigate to the view task page")
-    console.print("2. type a to add a task. Start working on your task")
-    console.print("3. Done with the task? Type d to delete. Want to change the task? Type e to edit!")
+    
     while True:
         console.print("Type the command and press enter to navigate to the page!", style = "bold")
         console.print("\n[magenta bold]v[/magenta bold] - view to do list\n[magenta bold]h[/magenta bold] - help page\n[magenta bold]a[/magenta bold] - add a task to list\n[red bold]exit[/red bold] - exit studdy buddy\n")
