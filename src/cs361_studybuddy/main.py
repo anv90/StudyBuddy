@@ -80,7 +80,7 @@ def edit_task(task_list: list[str]) -> None:
 def delete_task(task_list: list[str]) -> None:
     while True:
         idx = IntPrompt.ask("\nWhich task would you like to delete?")
-        logger.info(f"{len(task_list)}")
+        #logger.info(f"{len(task_list)}")
         if (idx > 0 and idx <= len(task_list)):
             break
         else:
@@ -141,6 +141,27 @@ def open_timer_page() -> None:
     #call a timer
     #close when they say exit
     #add timer info to a csv
+    #prompt for duration and count
+    duration = IntPrompt.ask("\nHow long would you like your timer (in seconds0?")
+    count = IntPrompt.ask("\nHow many times do you want your timer to repeat?")
+    timer_info = {"count":{count},"duration":{duration}}
+    post_response = requests.post(f"http://localhost:800/timer/set-timer", json=timer_info)
+    if post_response.status_code == 200:
+        timer_id = post_response.get('timer_id', 0)
+        get_response = requests.get(f"http://localhost:800/timer/{timer_id}/details")
+        if get_response == 200:
+            time_left = get_response.get('time_remaining')
+            state = get_response.get('state')
+            while (time_left > 0 and state == "active"): 
+                time_left = get_response.get('time_remaining')
+                state = get_response.get('state')
+            console.print("timer has ended!")
+        else:
+            console.print(f"{get_response.status_code}")
+
+    else: 
+        console.print(f"{post_response.status_code}")
+        
 
     return
 
@@ -148,7 +169,26 @@ def render_summary_page() -> None:
     #call the report json func
     #print the data -> sum
     #unit conversion service here as well
-    return
+    timer_json = {"report": {
+    "title": "Study Session Summary",
+    "operation": "sum",
+    "operation_field": "Cost", #fix!!
+    "filter_field": "Task Name",
+    "filter_value": "HVAC",
+    "date_field": "Last Performed Date",
+    "date_range": {
+      "from": "2025-01-01",
+      "to": "2025-12-31"
+    }
+  },
+  "data": timer_data.csv
+  }
+    response = requests.post(f"http://localhost:5001/report", json=timer_json)
+    if response.status_code == 200:
+        total = result.get('result', 0)
+        console.print(f"You focused for a total of {total} minutes!")
+    else:
+        console.print(response.status_code)
 
 def render_motivational_quote() -> None:
     response = requests.get(f"http://localhost:1400/quotes/1")
