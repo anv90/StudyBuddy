@@ -1,11 +1,8 @@
 from rich.box import SIMPLE_HEAVY
-from ssl import Options
+#from ssl import Options
 from loguru import logger
-#from art import *
 from rich import print
-from rich.prompt import Prompt, Confirm, IntPrompt
-#from typing import list
-#from rich import print
+from rich.prompt import Prompt, IntPrompt
 from rich.table import Table
 from rich.console import Console
 import time
@@ -140,12 +137,28 @@ def open_task_page(task_list: list[str]) -> None:
     #print list
     #print options list
     
+def open_timer_page() -> None:
+    #call a timer
+    #close when they say exit
+    #add timer info to a csv
 
+    return
 
+def render_summary_page() -> None:
+    #call the report json func
+    #print the data -> sum
+    #unit conversion service here as well
+    return
+
+def render_motivational_quote() -> None:
+    #call motivational quote func
+    #pass into ascii art service
+    return
 
 def main() -> None:
     #logger.info("template-project")
     console.print("welcome to study buddy") #make this look pretty
+    #call ascii art to make this look cute
 
     task_list: list[str] = []
     download_task_list(task_list)
@@ -163,6 +176,12 @@ def main() -> None:
                 render_help_page()
             case "a":
                 add_task(task_list)
+            case "t":
+                open_timer_page()
+            case "s":
+                render_summary_page()
+            case "q":
+                render_motivational_quote()
             case "exit":
                 upload_task_list(task_list)
                 break
