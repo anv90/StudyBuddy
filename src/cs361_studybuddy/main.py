@@ -6,14 +6,10 @@ from rich.prompt import Prompt, IntPrompt
 from rich.table import Table
 from rich.console import Console
 import time
+import requests
 console = Console()
 
 def download_task_list(task_list: list[str]) -> list[str]:
-    #find textfile in folder csv or text??
-    #if not found, create file
-    #read from file and add to list
-    #return the list
-    # if()
     try:
         with open("src/cs361_studybuddy/task.txt", "r") as file:
             line = file.readline()
@@ -35,35 +31,24 @@ def upload_task_list(task_list: list[str]):
     else:
         with open("src/cs361_studybuddy/task.txt", "w") as file:
             pass #so that list is cleared
-    #return 0
+    
 
 def print_task_list(task_list: list[str]) -> None:
-    # grid = Table.grid(expand=True)
-    # grid.add_column()
-    # grid.add_column()
-    # for idx, task in enumerate(task_list,start=1):
-    #     grid.add_row(f"{idx}", f"{task}")
-
-    # console.print(grid)
     table = Table(title="Task List", box=SIMPLE_HEAVY, min_width=10)
     for idx, task in enumerate(task_list,start=1):
         table.add_row(f"{idx}", f"{task}")
     console.print(table)
     #for each print??
-    return;
+    return
 
 def add_task(task_list: list[str]) -> None:
     task: str = input("\nAdding a task! Type contents here:")
     task_list.append(task)
     console.print(f" Task [magenta]{task}[/magenta] added!")
 
-    return;
+    return
 
 def edit_task(task_list: list[str]) -> None:
-    #ask for new string
-    #get new string
-    #return it
-    #idx = IntPrompt.ask("Which task do you want to edit?")
     while True:
         idx = IntPrompt.ask("\nWhich task would you like to edit?")
         if (idx > 0 and idx <= len(task_list)):
@@ -75,12 +60,10 @@ def edit_task(task_list: list[str]) -> None:
     console.print(f"old task: {old_task}")
     task: str = input("new task: ")
     task_list[idx-1] = task
-    #return " "
 
 def delete_task(task_list: list[str]) -> None:
     while True:
         idx = IntPrompt.ask("\nWhich task would you like to delete?")
-        #logger.info(f"{len(task_list)}")
         if (idx > 0 and idx <= len(task_list)):
             break
         else:
@@ -94,27 +77,18 @@ def delete_task(task_list: list[str]) -> None:
             task_list.pop(idx-1)
         case "N":
             return
-    #ask are you sure??
-    #if no then return
-    #if yes then delete from list
-    # print deleted
-    # return;
 
 
 def render_help_page() -> None:
-    #figure out how to use rich to make this look nice!
-    #header home page
-    #instructions
-    #header task page
-    #instructions
+    
    # console.print("I Need Help!\nWelcome to Study Buddy!\nOn the home page:\nTo view your to do list, type v\nOnce you are viewing your to do list, type a to add to your list, or d to delete from your list\nTo add to your to do list, type a\nQuestions? Contact help@studybuddy.com!")
     console.print("Wondering how to get started?", style="bold")
     console.print("1. From the home page, type v to navigate to the view task page")
     console.print("2. type a to add a task. Start working on your task")
     console.print("3. Done with the task? Type d to delete. Want to change the task? Type e to edit!")
-    return;
+    return
 
-#use rich prompting!!!
+
 def open_task_page(task_list: list[str]) -> None:
     while True:
         time.sleep(0.2)
@@ -133,9 +107,7 @@ def open_task_page(task_list: list[str]) -> None:
                 console.print("\nExiting Task List!", style="bold")
                 console.rule(style="magenta")
                 break;
-    #while loop
-    #print list
-    #print options list
+   
     
 def open_timer_page() -> None:
     #call a timer
@@ -194,6 +166,7 @@ def render_motivational_quote() -> None:
     response = requests.get(f"http://localhost:1400/quotes/1")
     if response.status_code == 200:
         quote = response.json()
+        console.print(quote)
          #pass into ascii art service
     else:
         console.print(response.status_code)
@@ -212,7 +185,7 @@ def main() -> None:
     while True:
         console.print("Type the command and press enter to navigate to the page!", style = "bold")
         console.print("\n[magenta bold]v[/magenta bold] - view to do list\n[magenta bold]h[/magenta bold] - help page\n[magenta bold]a[/magenta bold] - add a task to list\n[magenta bold]t[/magenta bold] - start a timer\n[magenta bold]s[/magenta bold] - study session summary\n[magenta bold]q[/magenta bold] - generate motivational quote\n[red bold]exit[/red bold] - exit studdy buddy\n")
-        option: str = Prompt.ask("enter command here", choices=["v", "h", "a", "exit"])
+        option: str = Prompt.ask("enter command here", choices=["v", "h", "a", "t","s","q", "exit"])
         console.rule(style="magenta")
         match (option):
             case "v":
