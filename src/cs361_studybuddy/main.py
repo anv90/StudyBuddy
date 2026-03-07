@@ -166,7 +166,7 @@ def main() -> None:
     
     while True:
         console.print("Type the command and press enter to navigate to the page!", style = "bold")
-        console.print("\n[magenta bold]v[/magenta bold] - view to do list\n[magenta bold]h[/magenta bold] - help page\n[magenta bold]a[/magenta bold] - add a task to list\n[red bold]exit[/red bold] - exit studdy buddy\n")
+        console.print("\n[magenta bold]v[/magenta bold] - view to do list\n[magenta bold]h[/magenta bold] - help page\n[magenta bold]a[/magenta bold] - add a task to list\n[magenta bold]t[/magenta bold] - start a timer\n[magenta bold]s[/magenta bold] - study session summary\n[magenta bold]q[/magenta bold] - generate motivational quote\n[red bold]exit[/red bold] - exit studdy buddy\n")
         option: str = Prompt.ask("enter command here", choices=["v", "h", "a", "exit"])
         console.rule(style="magenta")
         match (option):
