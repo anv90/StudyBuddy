@@ -151,8 +151,13 @@ def render_summary_page() -> None:
     return
 
 def render_motivational_quote() -> None:
-    #call motivational quote func
-    #pass into ascii art service
+    response = requests.get(f"http://localhost:1400/quotes/1")
+    if response.status_code == 200:
+        quote = response.json()
+         #pass into ascii art service
+    else:
+        console.print(response.status_code)
+
     return
 
 def main() -> None:
