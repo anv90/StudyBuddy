@@ -93,7 +93,7 @@ def open_task_page(task_list: list[str]) -> None:
     while True:
         time.sleep(0.2)
         print_task_list(task_list)
-        print("\nWant to work on your list?\n[magenta bold]a[/magenta bold] - add a task\n[magenta bold]d[/magenta bold] - delete a task\n[magenta bold]e[/magenta bold] - edit a task\n[red bold]exit[/red bold] - exit to do list\n")
+        console.print("\nWant to work on your list?\n[magenta bold]a[/magenta bold] - add a task\n[magenta bold]d[/magenta bold] - delete a task\n[magenta bold]e[/magenta bold] - edit a task\n[red bold]exit[/red bold] - exit to do list\n")
         #option = input("enter command here:")
         option : str = Prompt.ask("enter command here", choices=["a", "d", "e", "exit"])
         match option:
@@ -115,24 +115,30 @@ def open_timer_page() -> None:
     #add timer info to a csv
     #prompt for duration and count
     duration = IntPrompt.ask("\nHow long would you like your timer (in seconds0?")
-    count = IntPrompt.ask("\nHow many times do you want your timer to repeat?")
-    timer_info = {"count":{count},"duration":{duration}}
-    post_response = requests.post(f"http://localhost:800/timer/set-timer", json=timer_info)
+    #count = IntPrompt.ask("\nHow many times do you want your timer to repeat?")
+    timer_info = {"count":1,"duration":duration}
+    post_response = requests.post(f"http://localhost:8000/timer/set-timer", json=timer_info)
     if post_response.status_code == 200:
-        timer_id = post_response.get('timer_id', 0)
-        get_response = requests.get(f"http://localhost:800/timer/{timer_id}/details")
-        if get_response == 200:
-            time_left = get_response.get('time_remaining')
-            state = get_response.get('state')
-            while (time_left > 0 and state == "active"): 
-                time_left = get_response.get('time_remaining')
-                state = get_response.get('state')
-            console.print("timer has ended!")
-        else:
-            console.print(f"{get_response.status_code}")
+        timer_id = post_response.json().get('timer id', 0)
+        
+       
+        while (True):
+            time.sleep(1)
+            get_response = requests.get(f"http://localhost:8000/timer/{timer_id}/details")
+            result = get_response.json() 
+            if get_response.status_code == 200:
+                result = get_response.json()
+                time_left = result.get('time_remaining', 0)
+                state = result.get('state')
+                if (time_left <= 0 or state == "inactive"):
+                    break
+                print(f"{time_left} + {state}") 
+            else:
+                console.print(f"{get_response.status_code}")
+        console.print("timer has ended!")
 
     else: 
-        console.print(f"{post_response.status_code}")
+        console.print(f"{post_response.text}")
         
 
     return
