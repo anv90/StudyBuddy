@@ -5,8 +5,10 @@ from rich import print
 from rich.prompt import Prompt, IntPrompt
 from rich.table import Table
 from rich.console import Console
+from datetime import date
 import time
 import requests
+import json
 console = Console()
 
 def download_task_list(task_list: list[str]) -> list[str]:
@@ -114,6 +116,7 @@ def open_timer_page() -> None:
     #close when they say exit
     #add timer info to a csv
     #prompt for duration and count
+    info = Prompt.ask("\nWhat do you want to focus on today?")
     duration = IntPrompt.ask("\nHow long would you like your timer (in seconds0?")
     #count = IntPrompt.ask("\nHow many times do you want your timer to repeat?")
     timer_info = {"count":1,"duration":duration}
@@ -135,6 +138,9 @@ def open_timer_page() -> None:
                 print(f"{time_left} + {state}") 
             else:
                 console.print(f"{get_response.status_code}")
+        with open("src/cs361_studybuddy/timer_data.json", "a") as file:
+            session_info = {"task": info, "time": duration, "date": date.today().isoformat()}
+            json.dump(session_info, file, indent=4)
         console.print("timer has ended!")
 
     else: 
@@ -147,26 +153,29 @@ def render_summary_page() -> None:
     #call the report json func
     #print the data -> sum
     #unit conversion service here as well
+    with open("src/cs361_studybuddy/timer_data.json", "r") as file:
+        session_data = json.load(file)
     timer_json = {"report": {
-    "title": "Study Session Summary",
-    "operation": "sum",
-    "operation_field": "Cost", #fix!!
-    "filter_field": "Task Name",
-    "filter_value": "HVAC",
-    "date_field": "Last Performed Date",
-    "date_range": {
-      "from": "2025-01-01",
-      "to": "2025-12-31"
+        "title": "Study Session Summary",
+        "operation": "sum",
+        "operation_field": "time",
+        "filter_field": "",
+        "filter_value": "",
+        "date_field": "",
+        "date_range": {
+            "from": "",
+            "to": ""
+        }
+    },
+    "data": session_data
     }
-  },
-  "data": timer_data.csv
-  }
     response = requests.post(f"http://localhost:5001/report", json=timer_json)
+    result = response.json()
     if response.status_code == 200:
         total = result.get('result', 0)
-        console.print(f"You focused for a total of {total} minutes!")
+        console.print(f"You focused for a total of {total} seconds!")
     else:
-        console.print(response.status_code)
+        console.print(response.text)
 
 def render_motivational_quote() -> None:
     response = requests.get(f"http://localhost:1400/quotes/1")
