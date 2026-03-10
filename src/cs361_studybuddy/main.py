@@ -181,7 +181,8 @@ def render_summary_page() -> None:
         if unit_response.status_code != 200:
             console.print(f"{unit_response.text}")
             conversion = unit_response.json()
-        console.print(f"You focused for a total of {total} seconds!")
+        console.print(f"You focused for a total of {total} minutes!")
+        console.print(f"That's equal to {conversion["days"]} days!")
     else:
         console.print(response.text)
 
@@ -189,17 +190,25 @@ def render_motivational_quote() -> None:
     response = requests.get(f"http://localhost:1400/quotes/1")
     if response.status_code == 200:
         quote = response.json()
-        console.print(quote)
-         #pass into ascii art service
+        quote_json = {"message":quote[0], "sprite":True}
+        response = requests.post("http://localhost:8000/ascii", json=quote_json)
+        if response.status_code == 200:
+            result = response.json()
+            console.print(result["message"])
+        else:
+            console.print(response.text)
     else:
-        console.print(response.status_code)
+        console.print(response.text)
 
     return
 
 def main() -> None:
     #logger.info("template-project")
-    console.print("welcome to study buddy") #make this look pretty
-    #call ascii art to make this look cute
+    title_json = {"message":"welcome to study buddy", "sprite":False}
+    response = requests.post("http://localhost:8000/ascii", json=title_json)
+    if response.status_code == 200:
+        result = response.json()
+        console.print(result["message"]) 
 
     task_list: list[str] = []
     download_task_list(task_list)
