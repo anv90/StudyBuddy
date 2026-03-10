@@ -117,16 +117,20 @@ def open_timer_page() -> None:
     #add timer info to a csv
     #prompt for duration and count
     info = Prompt.ask("\nWhat do you want to focus on today?")
-    duration = IntPrompt.ask("\nHow long would you like your timer (in seconds0?")
-    #count = IntPrompt.ask("\nHow many times do you want your timer to repeat?")
-    timer_info = {"count":1,"duration":duration}
+    duration = IntPrompt.ask("\nHow long would you like your timer (in minutes)?")
+    
+    unit_response = requests.get(f"http://localhost:6001/unit-conversion?num={duration}&unit=min")
+    if unit_response.status_code != 200:
+        console.print(f"{unit_response.text}")
+    conversion = unit_response.json()
+    timer_info = {"count":1,"duration":conversion['sec']}
     post_response = requests.post(f"http://localhost:8000/timer/set-timer", json=timer_info)
     if post_response.status_code == 200:
         timer_id = post_response.json().get('timer id', 0)
         
        
         while (True):
-            time.sleep(1)
+            time.sleep(60)
             get_response = requests.get(f"http://localhost:8000/timer/{timer_id}/details")
             result = get_response.json() 
             if get_response.status_code == 200:
@@ -173,6 +177,10 @@ def render_summary_page() -> None:
     result = response.json()
     if response.status_code == 200:
         total = result.get('result', 0)
+        unit_response = requests.get(f"http://localhost:6001/unit-conversion?num={total}&unit=min")
+        if unit_response.status_code != 200:
+            console.print(f"{unit_response.text}")
+            conversion = unit_response.json()
         console.print(f"You focused for a total of {total} seconds!")
     else:
         console.print(response.text)
