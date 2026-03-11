@@ -98,7 +98,6 @@ def open_task_page(task_list: list[str]) -> None:
     console.print(f"[yellow]DEBUG: List has {len(task_list)} items.[/yellow]")
     while True:
         #time.sleep(0.2)
-        console.clear()
         print_task_list(task_list)
         console.print("\nWant to work on your list?\n[magenta bold]a[/magenta bold] - add a task\n[magenta bold]d[/magenta bold] - delete a task\n[magenta bold]e[/magenta bold] - edit a task\n[red bold]exit[/red bold] - exit to do list\n")
         #option = input("enter command here:")
@@ -128,11 +127,17 @@ def open_timer_page() -> None:
     if unit_response.status_code != 200:
         console.print(f"{unit_response.text}")
     conversion = unit_response.json()
-    timer_info = {"count":1,"duration":conversion['sec']}
+    logger.info(conversion["sec"])
+    timer_info = {"count":1,"duration":int(conversion['sec'])}
     post_response = requests.post(f"http://localhost:8000/timer/set-timer", json=timer_info)
     if post_response.status_code == 200:
         timer_id = post_response.json().get('timer id', 0)
-        
+        console.print("Here's some music while you wait:")
+        music_response = requests.get(f"http://localhost:2500/music")
+        if music_response.status_code == 200:
+            console.print(music_response.json())
+        else: 
+            console.print(music_response.text)
        
         while (True):
             time.sleep(60)
@@ -210,10 +215,10 @@ def render_motivational_quote() -> None:
 def main() -> None:
     #logger.info("template-project")
     title_json = {"message":"welcome to study buddy", "sprite":False}
-    # response = requests.post("http://localhost:8000/ascii", json=title_json)
-    # if response.status_code == 200:
-    #     result = response.json()
-    #     console.print(result["message"]) 
+    response = requests.post("http://localhost:8000/ascii", json=title_json)
+    if response.status_code == 200:
+        result = response.json()
+        console.print(result["message"]) 
 
     task_list: list[str] = []
     task_list = download_task_list()
@@ -226,25 +231,25 @@ def main() -> None:
         console.rule(style="magenta")
         match (option):
             case "v":
-                console.clear()
+                
                 open_task_page(task_list)
             case "h":
-                console.clear()
+               
                 render_help_page()
             case "a":
-                console.clear()
+               
                 add_task(task_list)
             case "t":
-                console.clear()
+               
                 open_timer_page()
             case "s":
-                console.clear()
+              
                 render_summary_page()
             case "q":
-                console.clear()
+               
                 render_motivational_quote()
             case "exit":
-                console.clear()
+                
                 upload_task_list(task_list)
                 break
     #read from text file and put all the stuff in the list
