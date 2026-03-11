@@ -11,18 +11,19 @@ import requests
 import json
 console = Console()
 
-def download_task_list(task_list: list[str]) -> list[str]:
+def download_task_list()->list[str]:
+    task_list = []
     try:
         with open("src/cs361_studybuddy/task.txt", "r") as file:
-            line = file.readline()
-            while line:
-                task_list.append(line)
-                line = file.readline()
+            for line in file:
+                task = line.strip()
+                if task:
+                    task_list.append(task)
     except FileNotFoundError:
-        logger.error("file not found")
+        #logger.error("file not found")
         return task_list
     else:
-        logger.info("file found")
+        #logger.info("file found")
         return task_list
 
 def upload_task_list(task_list: list[str]):
@@ -37,6 +38,8 @@ def upload_task_list(task_list: list[str]):
 
 def print_task_list(task_list: list[str]) -> None:
     table = Table(title="Task List", box=SIMPLE_HEAVY, min_width=10)
+    table.add_column("ID", justify="right")
+    table.add_column("Task")
     for idx, task in enumerate(task_list,start=1):
         table.add_row(f"{idx}", f"{task}")
     console.print(table)
@@ -92,8 +95,10 @@ def render_help_page() -> None:
 
 
 def open_task_page(task_list: list[str]) -> None:
+    console.print(f"[yellow]DEBUG: List has {len(task_list)} items.[/yellow]")
     while True:
-        time.sleep(0.2)
+        #time.sleep(0.2)
+        console.clear()
         print_task_list(task_list)
         console.print("\nWant to work on your list?\n[magenta bold]a[/magenta bold] - add a task\n[magenta bold]d[/magenta bold] - delete a task\n[magenta bold]e[/magenta bold] - edit a task\n[red bold]exit[/red bold] - exit to do list\n")
         #option = input("enter command here:")
@@ -108,7 +113,7 @@ def open_task_page(task_list: list[str]) -> None:
             case "exit":
                 console.print("\nExiting Task List!", style="bold")
                 console.rule(style="magenta")
-                break;
+                break
    
     
 def open_timer_page() -> None:
@@ -205,13 +210,13 @@ def render_motivational_quote() -> None:
 def main() -> None:
     #logger.info("template-project")
     title_json = {"message":"welcome to study buddy", "sprite":False}
-    response = requests.post("http://localhost:8000/ascii", json=title_json)
-    if response.status_code == 200:
-        result = response.json()
-        console.print(result["message"]) 
+    # response = requests.post("http://localhost:8000/ascii", json=title_json)
+    # if response.status_code == 200:
+    #     result = response.json()
+    #     console.print(result["message"]) 
 
     task_list: list[str] = []
-    download_task_list(task_list)
+    task_list = download_task_list()
     console.print("[bold]A study tool to help you keep track of your tasks so you can have a more efficient study session![/bold]\n")
     
     while True:
@@ -221,18 +226,25 @@ def main() -> None:
         console.rule(style="magenta")
         match (option):
             case "v":
+                console.clear()
                 open_task_page(task_list)
             case "h":
+                console.clear()
                 render_help_page()
             case "a":
+                console.clear()
                 add_task(task_list)
             case "t":
+                console.clear()
                 open_timer_page()
             case "s":
+                console.clear()
                 render_summary_page()
             case "q":
+                console.clear()
                 render_motivational_quote()
             case "exit":
+                console.clear()
                 upload_task_list(task_list)
                 break
     #read from text file and put all the stuff in the list
