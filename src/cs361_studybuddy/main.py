@@ -127,9 +127,9 @@ def open_timer_page() -> None:
     if unit_response.status_code != 200:
         console.print(f"{unit_response.text}")
     conversion = unit_response.json()
-    logger.info(conversion["sec"])
+   # logger.info(conversion["sec"])
     timer_info = {"count":1,"duration":int(conversion['sec'])}
-    post_response = requests.post(f"http://localhost:8000/timer/set-timer", json=timer_info)
+    post_response = requests.post(f"http://localhost:7800/timer/set-timer", json=timer_info)
     if post_response.status_code == 200:
         timer_id = post_response.json().get('timer id', 0)
         console.print("Here's some music while you wait:")
@@ -140,8 +140,8 @@ def open_timer_page() -> None:
             console.print(music_response.text)
        
         while (True):
-            time.sleep(60)
-            get_response = requests.get(f"http://localhost:8000/timer/{timer_id}/details")
+            time.sleep(10)
+            get_response = requests.get(f"http://localhost:7800/timer/{timer_id}/details")
             result = get_response.json() 
             if get_response.status_code == 200:
                 result = get_response.json()
@@ -149,12 +149,15 @@ def open_timer_page() -> None:
                 state = result.get('state')
                 if (time_left <= 0 or state == "inactive"):
                     break
-                print(f"{time_left} + {state}") 
+                print(f"time left: {time_left:.2f}") 
             else:
                 console.print(f"{get_response.status_code}")
-        with open("src/cs361_studybuddy/timer_data.json", "a") as file:
-            session_info = {"task": info, "time": duration, "date": date.today().isoformat()}
-            json.dump(session_info, file, indent=4)
+        with open("src/cs361_studybuddy/timer_data.json", "r") as file:
+            session_list = json.load(file)
+        session_info = {"task": info, "time": duration, "date": date.today().isoformat()}
+        session_list.append(session_info)
+        with open("src/cs361_studybuddy/timer_data.json", "w") as file:
+            json.dump(session_list, file, indent=4)
         console.print("timer has ended!")
 
     else: 
@@ -187,12 +190,15 @@ def render_summary_page() -> None:
     result = response.json()
     if response.status_code == 200:
         total = result.get('result', 0)
+        print(total)
         unit_response = requests.get(f"http://localhost:6001/unit-conversion?num={total}&unit=min")
-        if unit_response.status_code != 200:
-            console.print(f"{unit_response.text}")
+        if unit_response.status_code == 200:
+            
             conversion = unit_response.json()
-        console.print(f"You focused for a total of {total} minutes!")
-        console.print(f"That's equal to {conversion["days"]} days!")
+            console.print(f"You focused for a total of {total} minutes!")
+            console.print(f"That's equal to {conversion["day"]:.2f} days!")
+        else:
+            console.print(f"{unit_response.text}")
     else:
         console.print(response.text)
 
